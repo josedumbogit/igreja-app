@@ -1,65 +1,90 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { supabase } from '../../supabaseClient' // ✅ correto
+import React, { useState } from 'react';
+import { supabase } from '../../supabaseClient';
+import { Form, Container, Row, Col } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './Cadastro.css'; // Arquivo CSS customizado
 
 function Cadastro() {
-  const [name, setNome] = useState('')
-  const [gender, setGenero] = useState('')
-  const [birth_date, setNascimento] = useState('')
-  const navigate = useNavigate()
+  const [formData, setFormData] = useState({ name: '', gender: '', birth_date: '' });
 
-  async function adicionarMembro() {
-    if (!name) return alert('Nome obrigatório.')
-    if (!gender) return alert('Gênero obrigatório.')
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-    const { error } = await supabase.from('Pessoas').insert([
-      { name, birth_date, gender }
-    ])
-    
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { error } = await supabase.from('Pessoas').insert([formData]);
+
     if (error) {
-      alert('Erro ao salvar: ' + error.message)
+      toast.error('❌ Erro ao cadastrar membro. Verifique os dados.');
     } else {
-      alert('Membro salvo com sucesso!')
-      navigate('/')
+      toast.success('✅ Membro cadastrado com sucesso!');
+      setFormData({ name: '', gender: '', birth_date: '' });
     }
-  }
+  };
+
+  const handleReset = () => {
+    setFormData({ name: '', gender: '', birth_date: '' });
+  };
 
   return (
-    <div style={{ maxWidth: 400 }}>
-      <h2>➕ Cadastrar Novo Membro</h2>
+    <div className="cadastro-full-page">
+      <Container className="py-5">
+        <Row className="justify-content-center">
+          <Col md={10}>
+            <h2 className="mb-4 text-center">Cadastro de Membro</h2>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group className="mb-4">
+                <Form.Label>Nome Completo</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Digite o nome completo"
+                  required
+                />
+              </Form.Group>
 
-      <label>Nome:</label>
-      <input
-        placeholder="Nome completo"
-        value={name}
-        onChange={e => setNome(e.target.value)}
-        style={{ width: '100%', marginBottom: 10 }}
-      />
+              <Form.Group className="mb-4">
+                <Form.Label>Gênero</Form.Label>
+                <Form.Select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Selecione o gênero</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Feminino">Feminino</option>
+                </Form.Select>
+              </Form.Group>
 
-      <label>Data de Nascimento:</label>
-      <input
-        type="date"
-        value={birth_date}
-        onChange={e => setNascimento(e.target.value)}
-        style={{ width: '100%', marginBottom: 10 }}
-      />
+              <Form.Group className="mb-4">
+                <Form.Label>Data de Nascimento</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="birth_date"
+                  value={formData.birth_date}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Form>
+          </Col>
+        </Row>
+      </Container>
 
-      <label>Gênero:</label>
-      <select
-        value={gender}
-        onChange={e => setGenero(e.target.value)}
-        style={{ width: '100%', marginBottom: 20 }}
-      >
-        <option value="">Selecione o gênero</option>
-        <option value="M">Masculino</option>
-        <option value="F">Feminino</option>
-      </select>
+      <div className="botao-flutuante">
+        <button className="btn btn-secondary me-3" onClick={handleReset}>🧹 Limpar</button>
+        <button className="btn btn-primary" onClick={handleSubmit}>💾 Salvar</button>
+      </div>
 
-      <button onClick={adicionarMembro} style={{ width: '100%', padding: 10, backgroundColor: '#4CAF50', color: 'white', border: 'none' }}>
-        Salvar
-      </button>
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
-  )
+  );
 }
 
-export default Cadastro
+export default Cadastro;

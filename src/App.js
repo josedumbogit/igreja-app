@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import Cadastro from './pages/membros/Cadastro';
 import ListaMembros from './pages/membros/ListaMembros';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function App() {
   return (
     <Router>
       <div className="d-flex">
-        <Navbar />
+        <Sidebar />
         <div className="flex-grow-1 p-4">
           <Routes>
             <Route path="/" element={<Home />} />

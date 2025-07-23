@@ -1,0 +1,4 @@
+/* Exemplo de personalização, adicione mais se quiser */
+.list-group-item:hover {
+  background-color: #343a40;
+}

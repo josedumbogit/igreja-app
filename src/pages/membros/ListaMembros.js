@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, Form } from 'react-bootstrap';
 import { supabase } from '../../supabaseClient';
 
-function ListaMembros() {
+const ListaMembros = () => {
   const [membros, setMembros] = useState([]);
   const [nomeFiltro, setNomeFiltro] = useState('');
   const [generoFiltro, setGeneroFiltro] = useState('');
@@ -11,54 +11,58 @@ function ListaMembros() {
     fetchMembros();
   }, []);
 
-  async function fetchMembros() {
+  const fetchMembros = async () => {
     const { data, error } = await supabase.from('Pessoas').select('*');
     if (!error) setMembros(data);
-  }
+  };
 
-  const membrosFiltrados = membros.filter(m =>
-    m.name.toLowerCase().includes(nomeFiltro.toLowerCase()) &&
-    (generoFiltro === '' || m.gender === generoFiltro)
-  );
+
+    const membrosFiltrados = membros.filter(m => {
+    const nome = m?.name?.toLowerCase?.() || '';
+    const genero = m?.gender?.toLowerCase?.() || '';
+    return nome.includes(nomeFiltro.toLowerCase()) && genero.includes(generoFiltro.toLowerCase());
+    });
 
   return (
     <div>
-      <h3>Lista de Membros</h3>
-      <Form className="row mb-3">
-        <Form.Group className="col-md-6">
-          <Form.Label>Filtrar por Nome</Form.Label>
-          <Form.Control type="text" value={nomeFiltro} onChange={e => setNomeFiltro(e.target.value)} />
-        </Form.Group>
-        <Form.Group className="col-md-6">
-          <Form.Label>Filtrar por Gênero</Form.Label>
-          <Form.Select value={generoFiltro} onChange={e => setGeneroFiltro(e.target.value)}>
-            <option value="">Todos</option>
-            <option value="M">Masculino</option>
-            <option value="F">Feminino</option>
-          </Form.Select>
-        </Form.Group>
+      <h2 className="mb-4">Lista de Membros</h2>
+      <Form className="mb-3 d-flex gap-3">
+        <Form.Control
+          type="text"
+          placeholder="Pesquisar por nome"
+          value={nomeFiltro}
+          onChange={(e) => setNomeFiltro(e.target.value)}
+        />
+        <Form.Select
+          value={generoFiltro}
+          onChange={(e) => setGeneroFiltro(e.target.value)}
+        >
+          <option value="">Todos os Gêneros</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Feminino">Feminino</option>
+        </Form.Select>
       </Form>
 
-      <Table striped bordered hover responsive>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Nome</th>
-            <th>Data de Nascimento</th>
             <th>Gênero</th>
+            <th>Telefone</th>
           </tr>
         </thead>
         <tbody>
-          {membrosFiltrados.map(m => (
+          {membrosFiltrados.map((m) => (
             <tr key={m.id}>
               <td>{m.name}</td>
-              <td>{new Date(m.birth_date).toLocaleDateString()}</td>
-              <td>{m.gender === 'M' ? 'Masculino' : 'Feminino'}</td>
+              <td>{m.gender}</td>
+              <td>{m.birth_date}</td>
             </tr>
           ))}
         </tbody>
       </Table>
     </div>
   );
-}
+};
 
 export default ListaMembros;

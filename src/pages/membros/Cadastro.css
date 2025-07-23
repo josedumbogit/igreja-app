@@ -1,0 +1,17 @@
+.cadastro-full-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #f7f9fb;
+  padding-bottom: 80px;
+}
+
+.botao-flutuante {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  display: flex;
+  gap: 10px;
+  z-index: 999;
+}
