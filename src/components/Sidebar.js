@@ -5,7 +5,9 @@ import './Sidebar.css';
 function Sidebar() {
   return (
     <div className="bg-dark text-white p-3 min-vh-100" style={{ width: '250px' }}>
-      <h4 className="mb-4 text-center border-bottom pb-2">Painel</h4>
+      <h4 className="mb-4 text-center border-bottom pb-2">
+         <Link to="/" className="text-white text-decoration-none d-block">Painel</Link>
+      </h4>
 
       {/* Membros */}
       <div className="mb-3">
